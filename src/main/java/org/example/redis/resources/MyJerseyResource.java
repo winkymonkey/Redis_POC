@@ -122,7 +122,7 @@ public class MyJerseyResource {
 			
 			else if (HCOMMANDS.HSET.name().equals(operation)) {
 				System.out.println("--------------------");
-				hashServices.hset();
+				hashServices.hset_withDefaultSerializer();
 				response = Response.status(Status.OK).entity("HSET DONE").build();
 			}
 			

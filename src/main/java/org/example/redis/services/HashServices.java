@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.stereotype.Service;
 
 
@@ -40,12 +41,23 @@ public class HashServices {
 	 * Set a key-value
 	 * HSET hash1 hobby football
 	 */
-	public void hset() {
+	public void hset_withDefaultSerializer() {
 		hashOps.put("hash1", "hobby", "football");
 		hashOps.put("hash1", "age", String.valueOf(30));
 		hashOps.put("hash1", "fruits", Arrays.asList("mango", "apple", "bannana").toString());
 		hashOps.put("hash1", "isOpen", String.valueOf(true));
-		hashOps.put("hash1", "person", new Person("Abhishek", "Pal"));
+		
+		Person person  = new Person("Abhishek", "Pal", new Person.Address("kolkata", "westBengal"));
+		Map<String, Object> mappedHash = new Jackson2HashMapper(false).toHash(person);
+		hashOps.putAll("hash1", mappedHash);
+	}
+	
+	public void hset_withCustomSerializer() {
+		hashOps.put("hash1", "hobby", "football");
+		hashOps.put("hash1", "age", String.valueOf(30));
+		hashOps.put("hash1", "fruits", Arrays.asList("mango", "apple", "bannana").toString());
+		hashOps.put("hash1", "isOpen", String.valueOf(true));
+		hashOps.put("hash1", "person", new Person("Abhishek", "Pal", new Person.Address("kolkata", "westBengal")));
 	}
 	
 	/**
