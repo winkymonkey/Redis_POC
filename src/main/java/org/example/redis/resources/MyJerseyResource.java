@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.example.redis.services.HashServices;
+import org.example.redis.services.StringServices;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -17,20 +18,101 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MyJerseyResource {
 	
 	@Autowired
+	private StringServices stringServices;
+	
+	@Autowired
 	private HashServices hashServices;
 	
 	
-	private enum HCOMMANDS {
-		HSET, HMSET, 
-		HGET, HMGET, HGETALL, HKEYS, HVALS, HEXISTS, 
-		HLEN,
-		HINCRBY
+	
+	
+	private enum SCOMMANDS {
+		SET, MSET,    GET, MGET, GETRANGE,    STRLEN,    APPEND, SETRANGE
 	}
+	
+	private enum HCOMMANDS {
+		HSET, HMSET,    HGET, HMGET, HGETALL,    HKEYS, HVALS, HEXISTS,    HLEN,    HINCRBY
+	}
+	
+	
+	
+	
+	@GET
+	@Path("/stringOperations/{operation}")
+	public Response stringOperations(@PathParam(value="operation") String operation) {
+		Response response;
+		try {
+			if (operation == null) {
+				System.out.println("--------------------");
+				throw new Exception();
+			}
+			
+			else if (SCOMMANDS.SET.name().equals(operation)) {
+				System.out.println("--------------------");
+				stringServices.set();
+				response = Response.status(Status.OK).entity("SET DONE").build();
+			}
+			
+			else if (SCOMMANDS.MSET.name().equals(operation)) {
+				System.out.println("--------------------");
+				stringServices.mset();
+				response = Response.status(Status.OK).entity("MSET DONE").build();
+			}
+			
+			else if (SCOMMANDS.GET.name().equals(operation)) {
+				System.out.println("--------------------");
+				stringServices.get();
+				response = Response.status(Status.OK).entity("GET DONE").build();
+			}
+			
+			else if (SCOMMANDS.MGET.name().equals(operation)) {
+				System.out.println("--------------------");
+				stringServices.mget();
+				response = Response.status(Status.OK).entity("MGET DONE").build();
+			}
+			
+			else if (SCOMMANDS.GETRANGE.name().equals(operation)) {
+				System.out.println("--------------------");
+				stringServices.getrange();
+				response = Response.status(Status.OK).entity("GETRANGE DONE").build();
+			}
+			
+			else if (SCOMMANDS.STRLEN.name().equals(operation)) {
+				System.out.println("--------------------");
+				stringServices.strlen();
+				response = Response.status(Status.OK).entity("STRLEN DONE").build();
+			}
+			
+			else if (SCOMMANDS.APPEND.name().equals(operation)) {
+				System.out.println("--------------------");
+				stringServices.append();
+				response = Response.status(Status.OK).entity("APPEND DONE").build();
+			}
+			
+			else if (SCOMMANDS.SETRANGE.name().equals(operation)) {
+				System.out.println("--------------------");
+				stringServices.setrange();
+				response = Response.status(Status.OK).entity("SETRANGE DONE").build();
+			}
+			
+			else {
+				throw new Exception();
+			}
+			
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+			response = Response.status(Status.OK).entity("SORRY").build();
+		}
+		return response;
+	}
+	
+	
 	
 	
 	@GET
 	@Path("/hashOperations/{operation}")
-	public Response hmset(@PathParam(value="operation") String operation) {
+	public Response hashOperations(@PathParam(value="operation") String operation) {
 		Response response;
 		try {
 			if (operation == null) {
