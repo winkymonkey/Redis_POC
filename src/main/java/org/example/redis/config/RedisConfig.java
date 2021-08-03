@@ -2,6 +2,7 @@ package org.example.redis.config;
 
 import java.time.Duration;
 
+import org.example.redis.serializers.CustomRedisSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisPassword;
@@ -34,8 +35,8 @@ public class RedisConfig {
 		template.setConnectionFactory(jedisConnectionFactory());
 		template.setKeySerializer(keySerializer());
 		template.setHashKeySerializer(keySerializer());
-		template.setValueSerializer(valueSerializer());
-		template.setHashValueSerializer(valueSerializer());
+		template.setValueSerializer(valueSerializerCustom());
+		template.setHashValueSerializer(valueSerializerCustom());
 		template.afterPropertiesSet();
 		return template;
 	}
@@ -51,6 +52,10 @@ public class RedisConfig {
 		Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
 		jackson2JsonRedisSerializer.setObjectMapper(mapper);
 		return jackson2JsonRedisSerializer;
+	}
+	//--OR--
+	private RedisSerializer<Object> valueSerializerCustom() {
+		return new CustomRedisSerializer();
 	}
 	
 	
